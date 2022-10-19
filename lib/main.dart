@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cool_alert/cool_alert.dart';
+import 'package:drawing_animation/drawing_animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,7 +41,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   double? positionX = 100;
-  double? positionY = 320;
+  double? positionY = 350;
   bool loading = true;
 
   @override
@@ -49,10 +50,16 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
+  final Paint _paint = Paint()
+    ..color = Colors.redAccent
+    ..strokeWidth = 3.0
+    ..style = PaintingStyle.stroke
+    ..strokeJoin = StrokeJoin.miter;
+  var show = false;
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width * 0.8;
-    double height = MediaQuery.of(context).size.height * 0.8;
+    double width = MediaQuery.of(context).size.width * 0.5;
+    double height = MediaQuery.of(context).size.height * 0.5;
 
     return loading
         ? Lottie.network(
@@ -66,54 +73,84 @@ class _MyHomePageState extends State<MyHomePage> {
               alignment: Alignment.center,
               children: <Widget>[
                 Positioned(
-                  top: MediaQuery.of(context).size.height * 0.3,
-                  child: const Text(
-                    'Do you love me?',
-                    style: TextStyle(fontSize: 40, letterSpacing: 1),
-                    textAlign: TextAlign.center,
+                  top: MediaQuery.of(context).size.height * 0.01,
+                  bottom: MediaQuery.of(context).size.height * 0.6,
+                  child: AnimatedDrawing.paths(
+                    [
+                      Path()
+                        ..moveTo(0.5 * width, height * 0.6)
+                        ..cubicTo(0.1 * width, height * 0.4, -0.35 * width,
+                            height * 0.6, 0.5 * width, height)
+                        ..moveTo(0.5 * width, height * 0.6)
+                        ..cubicTo(0.9 * width, height * 0.4, 1.35 * width,
+                            height * 0.6, 0.5 * width, height),
+                    ],
+                    paints: [_paint],
+                    run: !show,
+                    animationOrder: PathOrders.topToBottom,
+                    duration: const Duration(seconds: 3),
+                    lineAnimation: LineAnimation.oneByOne,
+                    animationCurve: Curves.linear,
+                    onFinish: () => setState(() {
+                      show = true;
+                    }),
                   ),
                 ),
-                Positioned(
-                    top: 320,
-                    left: 100,
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          await CoolAlert.show(
-                              context: context,
-                              type: CoolAlertType.custom,
-                              title: 'Yeay! Thank You',
-                              lottieAsset: 'assets/jsons/love_animation.json',
-                              confirmBtnText: 'You\'re Welcome',
-                              widget: Lottie.network(
-                                  'https://assets7.lottiefiles.com/packages/lf20_ky24lkyk.json',
-                                  height: 200));
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green),
-                        child: Text(
-                          'Yes',
-                          style: style,
-                        ))),
-                Positioned(
-                    top: positionY,
-                    right: positionX,
-                    child: ElevatedButton(
-                        onPressed: () => setState(() {
-                              positionX =
-                                  Random().nextInt(width.toInt()).toDouble();
-                              positionY =
-                                  Random().nextInt(height.toInt()).toDouble();
-                              if (kDebugMode) {
-                                print('$positionX, $positionY');
-                              }
-                            }),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                        ),
-                        child: Text(
-                          'No',
-                          style: style,
-                        ))),
+                if (show)
+                  Positioned(
+                    top: MediaQuery.of(context).size.height * 0.35,
+                    child: const Text(
+                      'Do you love me?',
+                      style: TextStyle(fontSize: 40, letterSpacing: 1),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                if (show)
+                  Positioned(
+                      top: 350,
+                      left: 100,
+                      child: ElevatedButton(
+                          onPressed: () async {
+                            setState(() {
+                              show = !show;
+                            });
+                            await CoolAlert.show(
+                                context: context,
+                                type: CoolAlertType.custom,
+                                title: 'Yeay! Thank You',
+                                lottieAsset: 'assets/jsons/love_animation.json',
+                                confirmBtnText: 'You\'re Welcome',
+                                widget: Lottie.network(
+                                    'https://assets7.lottiefiles.com/packages/lf20_ky24lkyk.json',
+                                    height: 200));
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green),
+                          child: Text(
+                            'Yes',
+                            style: style,
+                          ))),
+                if (show)
+                  Positioned(
+                      top: positionY,
+                      right: positionX,
+                      child: ElevatedButton(
+                          onPressed: () => setState(() {
+                                positionX =
+                                    Random().nextInt(width.toInt()).toDouble();
+                                positionY =
+                                    Random().nextInt(height.toInt()).toDouble();
+                                if (kDebugMode) {
+                                  print('$positionX, $positionY');
+                                }
+                              }),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                          child: Text(
+                            'No',
+                            style: style,
+                          ))),
               ],
             ),
             floatingActionButton: FloatingActionButton(

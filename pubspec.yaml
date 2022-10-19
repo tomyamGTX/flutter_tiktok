@@ -35,6 +35,7 @@ dependencies:
   cool_alert: ^1.1.0
   url_launcher:
   lottie: ^1.4.3
+  drawing_animation: ^1.0.1
 
 
   # The following adds the Cupertino Icons font to your application.
