@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tiktok_flutter/constant.dart';
+import 'package:tiktok_flutter/views/google.play.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
@@ -22,10 +23,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter TikTok',
       theme: ThemeData(
-          useMaterial3: true,
-          primaryColor: kPrimary,
-          textTheme: GoogleFonts.lobsterTextTheme()),
-      home: const MyHomePage(title: 'Flutter TikTok'),
+        useMaterial3: true,
+        primaryColor: kPrimary,
+      ),
+      home: const GooglePlayClone(),
     );
   }
 }
